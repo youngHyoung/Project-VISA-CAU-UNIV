@@ -36,7 +36,7 @@ const mockExperts: Expert[] = [
     style: "Professional",
     specialty: ["E-7 Visa", "F-2-7 Points"],
     languages: ["English Native", "Korean Fluent"],
-    image: "👩‍💼",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: "2",
@@ -49,7 +49,7 @@ const mockExperts: Expert[] = [
     style: "Detailed",
     specialty: ["F-2 Specialist", "Family Reunion"],
     languages: ["Chinese Fluent", "English Advanced"],
-    image: "👨‍💼",
+    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: "3",
@@ -62,7 +62,7 @@ const mockExperts: Expert[] = [
     style: "Friendly",
     specialty: ["E-Visa", "D-10 Job Seeker"],
     languages: ["English Native"],
-    image: "👩‍💼",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: "4",
@@ -75,7 +75,7 @@ const mockExperts: Expert[] = [
     style: "Efficient",
     specialty: ["F-5 Permanent", "Investment Visa"],
     languages: ["English Advanced", "Japanese Fluent"],
-    image: "👨‍💼",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: "5",
@@ -88,7 +88,7 @@ const mockExperts: Expert[] = [
     style: "Thorough",
     specialty: ["D-2 Student", "E-7 Professional"],
     languages: ["Chinese Fluent", "Korean Native"],
-    image: "👩‍💼",
+    image: "https://images.unsplash.com/photo-1598550874175-4d7112ee7f38?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: "6",
@@ -101,7 +101,7 @@ const mockExperts: Expert[] = [
     style: "Patient",
     specialty: ["F-2-7 Points", "Marriage Visa"],
     languages: ["English Advanced"],
-    image: "👨‍💼",
+    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&q=80",
   },
   {
     id: "7",
@@ -114,7 +114,7 @@ const mockExperts: Expert[] = [
     style: "Supportive",
     specialty: ["E-Visa", "Remote Work Visa"],
     languages: ["English Native", "Spanish Fluent"],
-    image: "👩‍💼",
+    image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=200&q=80",
   },
 ];
 
@@ -233,9 +233,11 @@ const Experts = () => {
             >
               <div className="mb-4 flex items-start justify-between">
                 <div className="flex items-start gap-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-3xl">
-                    {expert.image}
-                  </div>
+                  <img
+                    src={expert.image}
+                    alt={expert.name}
+                    className="h-16 w-16 rounded-2xl object-cover"
+                  />
                   <div>
                     <h3 className="mb-1 text-lg font-bold text-foreground">
                       {expert.name}

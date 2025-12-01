@@ -69,6 +69,32 @@ const documentsByVisa: Record<string, Document[]> = {
       description: "Bank statements or scholarship",
       required: true,
     },
+    ],
+  d4: [
+    {
+      id: "passport",
+      name: "Valid Passport",
+      description: "Must be valid for duration of study",
+      required: true,
+    },
+    {
+      id: "admission",
+      name: "Language School Admission",
+      description: "Certificate of admission",
+      required: true,
+    },
+    {
+      id: "finance",
+      name: "Bank Statement",
+      description: "Proof of funds ($10,000+)",
+      required: true,
+    },
+    {
+      id: "education",
+      name: "Graduation Certificate",
+      description: "Highest degree or diploma",
+      required: true,
+    },
   ],
   default: [
     {
