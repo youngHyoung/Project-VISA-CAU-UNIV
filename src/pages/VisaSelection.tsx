@@ -29,6 +29,14 @@ const visaTypes: VisaType[] = [
     color: "bg-blue-500/10 text-blue-600",
   },
   {
+    id: "d4",
+    code: "D-4",
+    name: "Language Trainee",
+    description: "For learning Korean language",
+    icon: GraduationCap,
+    color: "bg-teal-500/10 text-teal-600",
+  },
+  {
     id: "d10",
     code: "D-10",
     name: "Job Seeker",

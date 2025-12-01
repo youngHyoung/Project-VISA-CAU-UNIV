@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Send, Download, Bot } from "lucide-react";
+import { ArrowLeft, Send, Download, Bot, UserCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type Message = {
@@ -11,79 +11,79 @@ type Message = {
   content: string;
 };
 
-const interviewQuestions = [
+const QUESTIONS = [
   "What is your specific major or field of expertise?",
   "What is your annual income range in USD?",
   "Have you violated any laws or regulations in Korea?",
   "What is your Korean language proficiency level (TOPIK score if any)?",
-  "When does your current visa expire? (If applicable)",
+  "When does your current visa expire? (If applicable)"
 ];
 
 const AIAssistant = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content:
-        "Hello! I'm your AI visa document assistant. I'll ask you 5 important questions to prepare your visa documents. Let's begin!",
-    },
-    {
-      role: "assistant",
-      content: interviewQuestions[0],
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const progress = Math.min(
-    ((currentQuestion + 1) / interviewQuestions.length) * 100,
-    100
-  );
+  // Check visa type for E/F redirection logic
+  const visaType = localStorage.getItem("selected-visa") || "";
+  const isSpecialistVisa = ["e", "f"].some(prefix => visaType.toLowerCase().startsWith(prefix));
 
-  const handleSend = () => {
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isGenerating]);
+
+  useEffect(() => {
+    // Initial greeting
+    const initialMessage = "Hello, I am ready to start the visa interview.\n\n" + QUESTIONS[0];
+    setMessages([{ role: "assistant", content: initialMessage }]);
+  }, []);
+
+  const progress = Math.min(((currentQuestionIndex) / 5) * 100, 100);
+
+  const handleSend = async () => {
     if (!input.trim()) return;
 
-    const newMessage: Message = { role: "user", content: input };
-    setMessages((prev) => [...prev, newMessage]);
+    const userMsg = input;
     setInput("");
+    setMessages((prev) => [...prev, { role: "user", content: userMsg }]);
+    setIsGenerating(true);
 
-    // Move to next question
+    // Simulate "AI" delay
     setTimeout(() => {
-      if (currentQuestion < interviewQuestions.length - 1) {
-        const nextQuestion = currentQuestion + 1;
-        setCurrentQuestion(nextQuestion);
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: interviewQuestions[nextQuestion] },
-        ]);
+      const nextIndex = currentQuestionIndex + 1;
+      
+      if (nextIndex < QUESTIONS.length) {
+        const nextQuestion = QUESTIONS[nextIndex];
+        setMessages((prev) => [...prev, { role: "assistant", content: nextQuestion }]);
+        setCurrentQuestionIndex(nextIndex);
       } else {
-        // All questions answered
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content:
-              "Perfect! I have all the information I need. I'm now analyzing your responses and preparing your visa documents...",
-          },
-        ]);
-
-        // Simulate document generation
-        setTimeout(() => {
-          setIsGenerating(true);
-          setTimeout(() => {
-            setIsGenerating(false);
-            setIsComplete(true);
-            toast({
-              title: "Document Ready!",
-              description:
-                "Your visa application document has been generated successfully.",
+        // Finished
+        const completionMsg = "Perfect! I have all the information I need. I'm now analyzing your responses and preparing your visa documents...";
+        setMessages((prev) => [...prev, { role: "assistant", content: completionMsg }]);
+        setIsComplete(true);
+        toast({
+          title: "Document Ready!",
+          description: "Your visa application document has been generated successfully.",
+        });
+        
+        if (isSpecialistVisa) {
+             toast({
+              title: "Specialist Recommended",
+              description: "For your visa type, we recommend connecting with a specialist to expedite the process.",
+              duration: 5000,
             });
-          }, 3000);
-        }, 1000);
+        }
       }
+      setIsGenerating(false);
     }, 1000);
   };
 
@@ -112,9 +112,7 @@ const AIAssistant = () => {
         <div className="mx-auto max-w-md">
           <div className="mb-2 flex items-center justify-between text-sm">
             <span className="text-muted-foreground">
-              Question{" "}
-              {Math.min(currentQuestion + 1, interviewQuestions.length)} of{" "}
-              {interviewQuestions.length}
+              Interview Progress
             </span>
             <span className="font-semibold text-primary">
               {Math.round(progress)}%
@@ -143,7 +141,7 @@ const AIAssistant = () => {
                     : "bg-white text-foreground shadow-card"
                 }`}
               >
-                <p className="text-sm leading-relaxed">{message.content}</p>
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
               </div>
             </div>
           ))}
@@ -156,23 +154,47 @@ const AIAssistant = () => {
                   <div className="h-2 w-2 animate-pulse rounded-full bg-primary delay-75"></div>
                   <div className="h-2 w-2 animate-pulse rounded-full bg-primary delay-150"></div>
                   <span className="ml-2 text-sm text-muted-foreground">
-                    Generating document...
+                    AI is thinking...
                   </span>
                 </div>
               </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
       </div>
 
-      {/* Download Button */}
+      {/* Action Buttons (Download or Specialist) */}
       {isComplete && (
-        <div className="px-5 py-4">
-          <div className="mx-auto max-w-md">
-            <Button className="h-14 w-full rounded-2xl bg-primary text-base font-semibold text-primary-foreground shadow-soft hover:bg-primary/90">
-              <Download className="mr-2 h-5 w-5" />
-              Download Generated Document
-            </Button>
+        <div className="px-5 py-4 animate-slide-up">
+          <div className="mx-auto max-w-md space-y-3">
+            {isSpecialistVisa ? (
+              <>
+                <div className="rounded-2xl bg-blue-50 p-4 text-sm text-blue-700">
+                  <p className="font-semibold mb-1">Expert Review Recommended</p>
+                  <p>For {visaType.toUpperCase()} visas, we recommend passing your documents to a specialist for faster processing.</p>
+                </div>
+                <Button 
+                  onClick={() => navigate("/experts")}
+                  className="h-14 w-full rounded-2xl bg-primary text-base font-semibold text-primary-foreground shadow-soft hover:bg-primary/90"
+                >
+                  <UserCheck className="mr-2 h-5 w-5" />
+                  Connect with Visa Specialist
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="h-12 w-full rounded-2xl border-primary/20 text-primary hover:bg-primary/5"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download Only
+                </Button>
+              </>
+            ) : (
+              <Button className="h-14 w-full rounded-2xl bg-primary text-base font-semibold text-primary-foreground shadow-soft hover:bg-primary/90">
+                <Download className="mr-2 h-5 w-5" />
+                Download Generated Document
+              </Button>
+            )}
           </div>
         </div>
       )}
