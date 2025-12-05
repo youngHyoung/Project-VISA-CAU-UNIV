@@ -9,6 +9,7 @@ import {
   Filter,
   CheckCircle,
 } from "lucide-react";
+import { toast } from "sonner";
 
 type Expert = {
   id: string;
@@ -176,6 +177,12 @@ const Experts = () => {
     });
   });
 
+  const handleBook = (expertName: string) => {
+    toast.success(`Booking Request Sent to ${expertName}`, {
+      description: "The expert will contact you shortly to confirm the time.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -302,7 +309,10 @@ const Experts = () => {
                 </div>
               </div>
 
-              <Button className="h-12 w-full rounded-2xl bg-primary font-semibold text-primary-foreground shadow-card hover:bg-primary/90">
+              <Button 
+                onClick={() => handleBook(expert.name)}
+                className="h-12 w-full rounded-2xl bg-primary font-semibold text-primary-foreground shadow-card hover:bg-primary/90"
+              >
                 Book Consultation
               </Button>
             </div>
