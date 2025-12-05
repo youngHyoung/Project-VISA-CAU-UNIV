@@ -10,6 +10,7 @@ import VisaSelection from "./pages/VisaSelection";
 import VisaChecklist from "./pages/VisaChecklist";
 import AIAssistant from "./pages/AIAssistant";
 import Experts from "./pages/Experts";
+import EmployerHelper from "./pages/EmployerHelper";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/visa-checklist" element={<VisaChecklist />} />
           <Route path="/ai-assistant" element={<AIAssistant />} />
           <Route path="/experts" element={<Experts />} />
+          <Route path="/employer-helper" element={<EmployerHelper />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

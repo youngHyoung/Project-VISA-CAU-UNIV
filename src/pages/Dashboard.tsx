@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bot, Briefcase, ArrowRight } from "lucide-react";
+import { Bot, Briefcase, ArrowRight, FileText } from "lucide-react";
 
 type UserData = {
   name: string;
@@ -69,7 +69,31 @@ const Dashboard = () => {
             </div>
           </button>
 
-          {/* Card B: Expert Matching */}
+          {/* Card B: Employer Document Helper */}
+          <button
+            onClick={() => navigate("/employer-helper")}
+            className="group w-full rounded-3xl bg-white p-6 shadow-card transition-all hover:scale-[1.02] hover:shadow-soft"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex-1 text-left">
+                <div className="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+                  <FileText className="h-7 w-7 text-primary" />
+                </div>
+                <h2 className="mb-2 text-xl font-bold text-foreground">
+                  Employer Document Helper
+                </h2>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  Generate professional document requests for your HR department
+                </p>
+                <div className="inline-flex items-center text-sm font-medium text-primary">
+                  Create Request
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </div>
+              </div>
+            </div>
+          </button>
+
+          {/* Card C: Expert Matching */}
           <button
             onClick={() => navigate("/experts")}
             className="group w-full rounded-3xl bg-white p-6 shadow-card transition-all hover:scale-[1.02] hover:shadow-soft"
